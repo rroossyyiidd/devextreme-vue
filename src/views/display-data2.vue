@@ -8,28 +8,29 @@
             :columns="columnsTable"
             :column-auto-width="true"
             :column-hiding-enabled="true"
-            :selection="{mode: 'multiple'}"
-            :group-panel="{visible: true}"
+            :selection="selectionTableOptions"
+            :group-panel="groupPanelTableOptions"
             :editing="editTable"
             @selection-changed="onSelectionChanged"
-            :ref="dataGridRefKey"
+            :customize-columns="customizeColumns"
+            :paging="pagingTableOptions"
+            :pager="pagerTableOptions"
     >
       <!--filter data table-->
       <dx-filter-row :visible="true"/>
       <!--edit data table-->
       <DxEditing
-              mode="row"
+              mode="popup"
               :allow-updating="true"
               :allow-deleting="true"
               :confirm-delete="true"
-      />
-      <DxPaging :page-size="12"/>
-      <DxPager
-              :show-page-size-selector="true"
-              :show-navigation-buttons="true"
-              :show-info="true"
-              :allowed-page-sizes="[8, 12, 20]"
-      />
+              :allow-adding="true"
+      >
+        <DxPopup
+                :show-title="true"
+                title="Edit data"
+        />
+      </DxEditing>
     </DxDataGrid>
   </div>
 </template>
@@ -38,18 +39,16 @@
   import "devextreme/data/odata/store";
   import DxDataGrid, {
     DxFilterRow,
-    DxPager,
-    DxPaging,
-    DxEditing
+    DxEditing,
+    DxPopup,
+    DxForm,
+    DxFormItem
   } from "devextreme-vue/data-grid";
   import CustomStore from 'devextreme/data/custom_store';
 
   function isNotEmpty(value) {
     return value !== undefined && value !== null && value !== '';
   }
-
-  // data grid refs key
-  const dataGridRefKey = 'myDataGridCustom';
 
   // error handle for editing table
   // function handleErrors(response) {
@@ -97,6 +96,7 @@
         });
     },
     insert: (values) => {
+      // eslint-disable-next-line no-console
       console.log('values insert', values)
       // return fetch("https://mydomain.com/MyDataService", {
       //   method: "POST",
@@ -140,21 +140,23 @@
       dataType: 'number', // type data column
       hidingPriority: 5, // hiding priority column when small screen, optional
       width: 100, // width column, optional
-      allowEditing: false
+      allowEditing: false, // allow editing data?
+      filterOperations: ["=", "<>", "<", ">", "<=", ">=", "between"] // filter operations (default)
     },
     {
       dataField: 'OrderDate',
       headerCellTemplate: 'Order Date',
       dataType: 'date',
       hidingPriority: 4,
-      allowEditing: false
+      allowEditing: true
     },
     {
       dataField: 'StoreCity',
       headerCellTemplate: 'Store City',
       dataType: 'string',
       hidingPriority: 2,
-      allowEditing: true
+      allowEditing: true,
+      filterOperations: ["="]
     },
     {
       dataField: 'StoreState',
@@ -167,16 +169,40 @@
       dataField: 'Employee',
       headerCellTemplate: 'Employee',
       dataType: 'string',
-      hidingPriority: 3
+      hidingPriority: 3,
+      allowEditing: true
     },
     {
       dataField: 'SaleAmount',
       headerCellTemplate: 'Sale Amount',
       dataType: 'number',
       format: 'currency',
-      hidingPriority: 6
+      hidingPriority: 6,
+      allowEditing: true
     }
   ]
+
+  // pagination table options
+  const pagingTableOptions = {
+    pageSize: 12
+  }
+
+  // paget table options
+  const pagerTableOptions = {
+    showPageSizeSelector: true,
+    showNavigationButtons: true,
+    showInfo: true,
+    allowedPageSizes: [8, 12, 20]
+  }
+
+  // group panel tabel options
+  const groupPanelTableOptions = {
+    visible: true
+  }
+
+  const selectionTableOptions = {
+    mode: 'multiple'
+  }
 
   export default {
     data() {
@@ -184,7 +210,10 @@
         dataSource: store,
         columnsTable,
         editTable,
-        dataGridRefKey,
+        groupPanelTableOptions,
+        pagerTableOptions,
+        pagingTableOptions,
+        selectionTableOptions
       };
     },
     methods: {
@@ -203,15 +232,32 @@
       },
       logEvent(e) {
         console.log('log: ', e)
+      },
+      /**
+       * merge column
+       * docs: https://js.devexpress.com/Documentation/Guide/Widgets/DataGrid/Columns/Column_Types/Band_Columns/
+       * @param columns
+       */
+      customizeColumns(columns) {
+        // columns.push({ // Pushes the "Contacts" band column into the "columns" array
+        //   caption: 'Location',
+        //   isBand: true
+        // });
+        //
+        // const contactsFields = ['StoreCity', 'StoreState'];
+        // for (let i = 0; i < columns.length - 1; i++) {
+        //   if (contactsFields.indexOf(columns[i].dataField) > -1) // If the column belongs to "Contacts",
+        //     columns[i].ownerBand = columns.length - 1; // assigns "Contacts" as the owner band column
+        // }
       }
     },
-    created() {},
     components: {
       DxDataGrid,
       DxFilterRow,
-      DxPager,
-      DxPaging,
-      DxEditing
+      DxEditing,
+      DxPopup,
+      DxFormItem,
+      DxForm
     }
   };
 </script>
