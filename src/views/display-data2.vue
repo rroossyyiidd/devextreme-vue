@@ -2,189 +2,148 @@
   <div>
     <h2 class="content-block">Display Data Custom</h2>
 
-    <!--:data-source="dataSourceConfig"-->
-    <dx-data-grid
-      class="dx-card wide-card"
-      :data-source="dataSourceConfig"
-      :focused-row-index="0"
-      :show-borders="false"
-      :focused-row-enabled="true"
-      :column-auto-width="true"
-      :column-hiding-enabled="true"
-      key-expr="Task_ID"
-      ref="myDataGridCustom"
+    <DxDataGrid
+            :data-source="dataSource"
+            :show-borders="true"
+            :columns="columnsTable"
+            :column-auto-width="true"
+            :column-hiding-enabled="true"
+            :selection="{mode: 'multiple'}"
+            @selection-changed="onSelectionChanged"
     >
-      <dx-paging
-              :page-size.sync="pageSize"
-              :page-index.sync="pageIndex"
-      />
-      <dx-pager
-              :allowed-page-sizes="[10, 20, 50]"
-              :show-navigation-buttons="true"
+      <dx-filter-row :visible="true"/>
+      <DxPaging :page-size="12"/>
+      <DxPager
               :show-page-size-selector="true"
-              :show-info="true" />
-      <dx-filter-row :visible="true" />
-
-      <dx-column data-field="Task_ID" :width="90" :hiding-priority="2" />
-
-      <dx-column
-        data-field="Task_Subject"
-        caption="Subject"
-        :width="190"
-        :hiding-priority="7"
-        :filter-value.sync="filterValue"
+              :show-navigation-buttons="true"
+              :show-info="true"
+              :allowed-page-sizes="[8, 12, 20]"
       />
-
-      <dx-column
-        data-field="Task_Status"
-        caption="Status"
-        :hiding-priority="6"
-      />
-
-      <dx-column
-        data-field="Task_Priority"
-        caption="Priority"
-        :hiding-priority="5"
-      >
-        <dx-lookup
-          display-expr="name"
-          value-expr="value"
-          :data-source="priorities"
-        />
-      </dx-column>
-
-      <!--<dx-column-->
-      <!--  data-field="ResponsibleEmployee.Employee_Full_Name"-->
-      <!--  caption="Assigned To"-->
-      <!--  :allow-sorting="false"-->
-      <!--  :hiding-priority="7"-->
-      <!--/>-->
-
-      <dx-column
-        data-field="Task_Start_Date"
-        caption="Start Date"
-        data-type="date"
-        :hiding-priority="3"
-      />
-
-      <dx-column
-        data-field="Task_Due_Date"
-        caption="Due Date"
-        data-type="date"
-        :hiding-priority="4"
-      />
-
-      <dx-column
-        data-field="Task_Priority"
-        caption="Priority"
-        :hiding-priority="1"
-      />
-
-      <dx-column
-        data-field="Task_Completion"
-        caption="Completion"
-        :hiding-priority="0"
-      />
-    </dx-data-grid>
+    </DxDataGrid>
   </div>
 </template>
 
 <script>
-import "devextreme/data/odata/store";
-import {datas} from "./dataTable";
-import DxDataGrid, {
-  DxColumn,
-  DxFilterRow,
-  DxLookup,
-  DxPager,
-  DxPaging
-} from "devextreme-vue/data-grid";
-import CustomStore from 'devextreme/data/custom_store';
-
-const priorities = [
-  { name: "High", value: 4 },
-  { name: "Urgent", value: 3 },
-  { name: "Normal", value: 2 },
-  { name: "Low", value: 1 }
-];
-
-export default {
-  data() {
-    return {
-      priorities,
-      dataSource: datas,
-      allowedOperations: ['contains', '='],
-      selectedOperation: 'contains',
-      filterValue: '', // filter value column
-      pageIndex: 0, // selected page
-      pageSize: 10 // data per page
-    };
-  },
-  methods: {
-    applyFilter (operation, value) {
-      // eslint-disable-next-line no-console
-      console.log('operation: ', operation)
-      // eslint-disable-next-line no-console
-      console.log('value: ', value)
-      this.selectedOperation = operation;
-      this.filterValue = value;
-    },
-    changePageSize(value) {
-      console.log('change pageSize: ', value)
-      this.pageSize = value;
-    },
-    goToLastPage() {
-      const pageCount = this.$refs['myDataGridCustom'].instance.pageCount();
-      console.log('page count: ', pageCount)
-      this.pageIndex = pageCount - 1;
-    },
-    getTotalPageCount() {
-      return this.$refs['myDataGridCustom'].instance.pageCount();
-    }
-  },
-  created() {
-    const store = new CustomStore({
-      key: "Task_ID",
-    })
-
-    this.dataSourceConfig = {
-      store: {
-        type: "odata",
-        key: "Task_ID",
-        // dataSource: datas
-        url: "https://js.devexpress.com/Demos/DevAV/odata/Tasks"
-      },
-      // key: "Task_ID",
-      // dataSource: datas,
-      expand: "ResponsibleEmployee",
-      select: [
-        "Task_ID",
-        "Task_Subject",
-        "Task_Start_Date",
-        "Task_Due_Date",
-        "Task_Status",
-        "Task_Priority",
-        "Task_Completion",
-        "ResponsibleEmployee/Employee_Full_Name"
-      ]
-    };
-  },
-  components: {
-    DxDataGrid,
+  import "devextreme/data/odata/store";
+  import DxDataGrid, {
     DxColumn,
     DxFilterRow,
     DxLookup,
     DxPager,
     DxPaging
-  },
-  watch: {
-    'filterValue': function (value) {
-      console.log('value watch: ', value)
-      console.log('selectedOperation: ', this.selectedOperation)
-    },
-    'pageIndex': function (value) {
-      console.log('pageIndex watch: ', value)
-    }
+  } from "devextreme-vue/data-grid";
+  import CustomStore from 'devextreme/data/custom_store';
+
+  function isNotEmpty(value) {
+    return value !== undefined && value !== null && value !== '';
   }
-};
+
+  const store = new CustomStore({
+    key: 'OrderNumber',
+    load: function (loadOptions) {
+      let params = '?';
+      [
+        'skip',
+        'take',
+        'requireTotalCount',
+        'requireGroupCount',
+        'sort',
+        'filter',
+        'totalSummary',
+        'group',
+        'groupSummary'
+      ].forEach(function (i) {
+        if (i in loadOptions && isNotEmpty(loadOptions[i])) {
+          params += `${i}=${JSON.stringify(loadOptions[i])}&`;
+        }
+      });
+      params = params.slice(0, -1);
+      // console.log('isi param: ', params)
+      return fetch(`https://js.devexpress.com/Demos/WidgetsGalleryDataService/api/orders${params}`)
+        .then(response => response.json())
+        .then((data) => {
+          // console.log('data respnse: ', data)
+          return {
+            data: data.data,
+            totalCount: data.totalCount,
+            summary: data.summary,
+            groupCount: data.groupCount
+          };
+        })
+        .catch(() => {
+          throw 'Data Loading Error';
+        });
+    }
+  });
+
+  // column table
+  const columnsTable = [
+    {
+      dataField: 'OrderNumber', // data field
+      headerCellTemplate: 'No Order', // title header column
+      dataType: 'number', // type data column
+      hidingPriority: 5, // hiding priority column when small screen, optional
+      width: 100 // width column, optional
+    },
+    {
+      dataField: 'OrderDate',
+      headerCellTemplate: 'Order Date',
+      dataType: 'date',
+      hidingPriority: 4
+    },
+    {
+      dataField: 'StoreCity',
+      headerCellTemplate: 'Store City',
+      dataType: 'string',
+      hidingPriority: 2
+    },
+    {
+      dataField: 'StoreState',
+      headerCellTemplate: 'Store State',
+      dataType: 'string',
+      hidingPriority: 1
+    },
+    {
+      dataField: 'Employee',
+      headerCellTemplate: 'Employee',
+      dataType: 'string',
+      hidingPriority: 3
+    },
+    {
+      dataField: 'SaleAmount',
+      headerCellTemplate: 'Sale Amount',
+      dataType: 'number',
+      format: 'currency',
+      hidingPriority: 6
+    }
+  ]
+
+  export default {
+    data() {
+      return {
+        dataSource: store,
+        columnsTable,
+        allowedOperations: ['contains', '='],
+        selectedOperation: 'contains'
+      };
+    },
+    methods: {
+      /**
+       * handle selected row data
+       * @param {object} select - selected row data
+       */
+      onSelectionChanged(select) {
+        console.log('selected row: ', select)
+      }
+    },
+    created() {},
+    components: {
+      DxDataGrid,
+      DxColumn,
+      DxFilterRow,
+      DxLookup,
+      DxPager,
+      DxPaging
+    }
+  };
 </script>
