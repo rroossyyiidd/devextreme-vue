@@ -9,9 +9,20 @@
             :column-auto-width="true"
             :column-hiding-enabled="true"
             :selection="{mode: 'multiple'}"
+            :group-panel="{visible: true}"
+            :editing="editTable"
             @selection-changed="onSelectionChanged"
+            :ref="dataGridRefKey"
     >
+      <!--filter data table-->
       <dx-filter-row :visible="true"/>
+      <!--edit data table-->
+      <DxEditing
+              mode="row"
+              :allow-updating="true"
+              :allow-deleting="true"
+              :confirm-delete="true"
+      />
       <DxPaging :page-size="12"/>
       <DxPager
               :show-page-size-selector="true"
@@ -26,11 +37,10 @@
 <script>
   import "devextreme/data/odata/store";
   import DxDataGrid, {
-    DxColumn,
     DxFilterRow,
-    DxLookup,
     DxPager,
-    DxPaging
+    DxPaging,
+    DxEditing
   } from "devextreme-vue/data-grid";
   import CustomStore from 'devextreme/data/custom_store';
 
@@ -38,6 +48,18 @@
     return value !== undefined && value !== null && value !== '';
   }
 
+  // data grid refs key
+  const dataGridRefKey = 'myDataGridCustom';
+
+  // error handle for editing table
+  // function handleErrors(response) {
+  //   if (!response.ok)
+  //     throw Error(response.statusText);
+  //   return response;
+  // }
+
+  // docs custom store:
+  // https://js.devexpress.com/Documentation/Guide/Widgets/DataGrid/Data_Binding/Custom_Sources/
   const store = new CustomStore({
     key: 'OrderNumber',
     load: function (loadOptions) {
@@ -73,8 +95,42 @@
         .catch(() => {
           throw 'Data Loading Error';
         });
+    },
+    insert: (values) => {
+      console.log('values insert', values)
+      // return fetch("https://mydomain.com/MyDataService", {
+      //   method: "POST",
+      //   body: JSON.stringify(values),
+      //   headers: {
+      //     'Content-Type': 'application/json'
+      //   }
+      // }).then(handleErrors);
+    },
+    remove: (key) => {
+      console.log('key: ', key)
+      // return fetch(`https://mydomain.com/MyDataService/${encodeURIComponent(key)}`, {
+      //   method: "DELETE"
+      // }).then(handleErrors);
+    },
+    update: (key, values) => {
+      console.log('key update: ', key)
+      console.log('values update: ', values)
+      // return fetch(`https://mydomain.com/MyDataService/${encodeURIComponent(key)}`, {
+      //   method: "PUT",
+      //   body: JSON.stringify(values),
+      //   headers: {
+      //     'Content-Type': 'application/json'
+      //   }
+      // }).then(handleErrors);
     }
   });
+
+  // edit data table
+  const editTable = {
+    editEnabled: true,
+    removeEnabled: true,
+    inserEnabled: true
+  }
 
   // column table
   const columnsTable = [
@@ -83,25 +139,29 @@
       headerCellTemplate: 'No Order', // title header column
       dataType: 'number', // type data column
       hidingPriority: 5, // hiding priority column when small screen, optional
-      width: 100 // width column, optional
+      width: 100, // width column, optional
+      allowEditing: false
     },
     {
       dataField: 'OrderDate',
       headerCellTemplate: 'Order Date',
       dataType: 'date',
-      hidingPriority: 4
+      hidingPriority: 4,
+      allowEditing: false
     },
     {
       dataField: 'StoreCity',
       headerCellTemplate: 'Store City',
       dataType: 'string',
-      hidingPriority: 2
+      hidingPriority: 2,
+      allowEditing: true
     },
     {
       dataField: 'StoreState',
       headerCellTemplate: 'Store State',
       dataType: 'string',
-      hidingPriority: 1
+      hidingPriority: 1,
+      allowEditing: true
     },
     {
       dataField: 'Employee',
@@ -123,8 +183,8 @@
       return {
         dataSource: store,
         columnsTable,
-        allowedOperations: ['contains', '='],
-        selectedOperation: 'contains'
+        editTable,
+        dataGridRefKey,
       };
     },
     methods: {
@@ -134,16 +194,24 @@
        */
       onSelectionChanged(select) {
         console.log('selected row: ', select)
+      },
+      // example log editing
+      // https://codesandbox.io/s/nu5qc?file=/App.vue
+      onEditingStart(e) {
+        console.log('e.key: ', e)
+        // ...
+      },
+      logEvent(e) {
+        console.log('log: ', e)
       }
     },
     created() {},
     components: {
       DxDataGrid,
-      DxColumn,
       DxFilterRow,
-      DxLookup,
       DxPager,
-      DxPaging
+      DxPaging,
+      DxEditing
     }
   };
 </script>
