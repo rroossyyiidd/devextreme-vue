@@ -6,6 +6,7 @@ import auth from "./auth";
 import Home from "./views/home";
 import Profile from "./views/profile";
 import DisplayData from "./views/display-data";
+import DisplayData2 from "./views/display-data2";
 import defaultLayout from "./layouts/side-nav-outer-toolbar";
 import simpleLayout from "./layouts/single-card";
 
@@ -39,6 +40,15 @@ const router = new Router({
         layout: defaultLayout,
         content: DisplayData
       }
+    },
+    {
+      path: "/display-data-two",
+      name: "display-data-two",
+      meta: { requiresAuth: true },
+      components: {
+        layout: defaultLayout,
+        content: DisplayData2
+      }
     },{
       path: "/login-form",
       name: "login-form",
@@ -64,7 +74,7 @@ const router = new Router({
       path: "*",
       redirect: "/home"
     }
-    
+
   ]
 });
 
