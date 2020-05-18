@@ -19,6 +19,10 @@ export default [
       {
         text: "Display Data Custom",
         path: "/display-data-two"
+      },
+      {
+        text: "Display Data Custom 2",
+        path: "/display-data-three"
       }
     ]
   }

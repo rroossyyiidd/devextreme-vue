@@ -7,6 +7,7 @@ import Home from "./views/home";
 import Profile from "./views/profile";
 import DisplayData from "./views/display-data";
 import DisplayData2 from "./views/display-data2";
+import DisplayData3 from "./views/display-data3";
 import defaultLayout from "./layouts/side-nav-outer-toolbar";
 import simpleLayout from "./layouts/single-card";
 
@@ -48,6 +49,15 @@ const router = new Router({
       components: {
         layout: defaultLayout,
         content: DisplayData2
+      }
+    },
+    {
+      path: "/display-data-three",
+      name: "display-data-three",
+      meta: { requiresAuth: true },
+      components: {
+        layout: defaultLayout,
+        content: DisplayData3
       }
     },{
       path: "/login-form",

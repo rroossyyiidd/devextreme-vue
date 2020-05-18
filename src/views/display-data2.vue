@@ -15,6 +15,7 @@
             :customize-columns="customizeColumns"
             :paging="pagingTableOptions"
             :pager="pagerTableOptions"
+            :remote-operations="true"
     >
       <!--filter data table-->
       <dx-filter-row :visible="true"/>
@@ -79,7 +80,7 @@
         }
       });
       params = params.slice(0, -1);
-      // console.log('isi param: ', params)
+      console.log('isi param display2: ', params)
       return fetch(`https://js.devexpress.com/Demos/WidgetsGalleryDataService/api/orders${params}`)
         .then(response => response.json())
         .then((data) => {
