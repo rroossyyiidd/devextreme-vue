@@ -31,6 +31,53 @@
                 :show-title="true"
                 title="Edit data"
         />
+        <DxForm>
+          <DxItem item-type="group"
+                  :col-count="2"
+                  :col-span="2">
+            <DxItem
+                    data-field="OrderDate"
+                    datatype="date"
+                    :validationRules="[{
+                      type: 'required',
+                      message: 'this field is required'
+                    }]"
+            />
+            <DxItem
+                    data-field="StoreCity"
+                    :validationRules="[{
+                      type: 'required',
+                      message: 'this field is required'
+                    }]"
+            />
+            <DxItem
+                    data-field="StoreState"
+                    :validationRules="[{
+                      type: 'required',
+                      message: 'this field is required'
+                    }]"
+            />
+            <DxItem
+                    data-field="Employee"
+                    :validationRules="[{
+                      type: 'pattern',
+                      pattern: '^[a-zA-Z]+$',
+                      message: 'The value should not contain digits'
+                    },{
+                      type: 'required',
+                      message: 'this field is required'
+                    }]"
+            />
+            <DxItem
+                    data-field="SaleAmount"
+                    datatype="number"
+                    :validationRules="[{
+                      type: 'required',
+                      message: 'this field is required'
+                    }]"
+            />
+          </DxItem>
+        </DxForm>
       </DxEditing>
     </DxDataGrid>
   </div>
@@ -42,9 +89,9 @@
     DxFilterRow,
     DxEditing,
     DxPopup,
-    DxForm,
-    DxFormItem
+    DxForm
   } from "devextreme-vue/data-grid";
+  import {DxItem} from "devextreme-vue/form";
   import CustomStore from 'devextreme/data/custom_store';
 
   function isNotEmpty(value) {
@@ -257,8 +304,8 @@
       DxFilterRow,
       DxEditing,
       DxPopup,
-      DxFormItem,
-      DxForm
+      DxForm,
+      DxItem
     }
   };
 </script>
