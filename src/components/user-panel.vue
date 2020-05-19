@@ -44,7 +44,8 @@ export default {
 </script>
 
 <style lang="scss">
-@import "../themes/generated/variables.base.scss";
+/*@import "../themes/generated/variables.base.scss";*/
+@import "../themes/generated/variablesyellowdark.base.scss";
 
 .user-info {
   display: flex;

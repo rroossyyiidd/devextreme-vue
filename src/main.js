@@ -1,6 +1,9 @@
 import 'devextreme/dist/css/dx.common.css';
-import './themes/generated/theme.base.css';
-import './themes/generated/theme.additional.css';
+// import './themes/generated/theme.base.css';
+// import './themes/generated/theme.additional.css';
+// create theme at https://devexpress.github.io/ThemeBuilder/
+// import './themes/generated/dx.material.yellow-dark.css';
+import './themes/generated/yellowdark.base.css';
 import Vue from "vue";
 
 import App from "./App";

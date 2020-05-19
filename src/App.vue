@@ -82,7 +82,8 @@ body {
 }
 
 .app {
-  @import "./themes/generated/variables.base.scss";
+  /*@import "./themes/generated/variables.base.scss";*/
+  @import "./themes/generated/variablesyellowdark.base.scss";
   background-color: darken($base-bg, 5);
   display: flex;
   height: 100%;

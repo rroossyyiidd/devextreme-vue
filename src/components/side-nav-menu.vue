@@ -90,7 +90,8 @@ export default {
 
 <style lang="scss">
 @import "../dx-styles.scss";
-@import "../themes/generated/variables.additional.scss";
+/*@import "../themes/generated/variables.additional.scss";*/
+@import "../themes/generated/variablesyellowdark.base.scss";
 
 .side-navigation-menu {
   display: flex;

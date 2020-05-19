@@ -156,7 +156,9 @@ export default {
 }
 
 #navigation-header {
-  @import "../themes/generated/variables.additional.scss";
+  /*@import "../themes/generated/variables.additional.scss";*/
+  @import "../themes/generated/variablesyellowdark.base.scss";
+
   background-color: $base-accent;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 
