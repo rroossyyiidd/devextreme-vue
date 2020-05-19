@@ -84,13 +84,9 @@
 </template>
 
 <script>
+  /* eslint-disable */
   import "devextreme/data/odata/store";
-  import DxDataGrid, {
-    DxFilterRow,
-    DxEditing,
-    DxPopup,
-    DxForm
-  } from "devextreme-vue/data-grid";
+  import DxDataGrid, {DxEditing, DxFilterRow, DxForm, DxLookup, DxPopup} from "devextreme-vue/data-grid";
   import {DxItem} from "devextreme-vue/form";
   import CustomStore from 'devextreme/data/custom_store';
 
@@ -104,74 +100,6 @@
   //     throw Error(response.statusText);
   //   return response;
   // }
-
-  // docs custom store:
-  // https://js.devexpress.com/Documentation/Guide/Widgets/DataGrid/Data_Binding/Custom_Sources/
-  const store = new CustomStore({
-    key: 'OrderNumber',
-    load: function (loadOptions) {
-      let params = '?';
-      [
-        'skip',
-        'take',
-        'requireTotalCount',
-        'requireGroupCount',
-        'sort',
-        'filter',
-        'totalSummary',
-        'group',
-        'groupSummary'
-      ].forEach(function (i) {
-        if (i in loadOptions && isNotEmpty(loadOptions[i])) {
-          params += `${i}=${JSON.stringify(loadOptions[i])}&`;
-        }
-      });
-      params = params.slice(0, -1);
-      console.log('isi param display2: ', params)
-      return fetch(`https://js.devexpress.com/Demos/WidgetsGalleryDataService/api/orders${params}`)
-        .then(response => response.json())
-        .then((data) => {
-          // console.log('data respnse: ', data)
-          return {
-            data: data.data,
-            totalCount: data.totalCount,
-            summary: data.summary,
-            groupCount: data.groupCount
-          };
-        })
-        .catch(() => {
-          throw 'Data Loading Error';
-        });
-    },
-    insert: (values) => {
-      // eslint-disable-next-line no-console
-      console.log('values insert', values)
-      // return fetch("https://mydomain.com/MyDataService", {
-      //   method: "POST",
-      //   body: JSON.stringify(values),
-      //   headers: {
-      //     'Content-Type': 'application/json'
-      //   }
-      // }).then(handleErrors);
-    },
-    remove: (key) => {
-      console.log('key: ', key)
-      // return fetch(`https://mydomain.com/MyDataService/${encodeURIComponent(key)}`, {
-      //   method: "DELETE"
-      // }).then(handleErrors);
-    },
-    update: (key, values) => {
-      console.log('key update: ', key)
-      console.log('values update: ', values)
-      // return fetch(`https://mydomain.com/MyDataService/${encodeURIComponent(key)}`, {
-      //   method: "PUT",
-      //   body: JSON.stringify(values),
-      //   headers: {
-      //     'Content-Type': 'application/json'
-      //   }
-      // }).then(handleErrors);
-    }
-  });
 
   // edit data table
   const editTable = {
@@ -255,7 +183,7 @@
   export default {
     data() {
       return {
-        dataSource: store,
+        dataSource: {},
         columnsTable,
         editTable,
         groupPanelTableOptions,
@@ -305,7 +233,77 @@
       DxEditing,
       DxPopup,
       DxForm,
-      DxItem
+      DxItem,
+      DxLookup
+    },
+    created() {
+      // docs custom store:
+      // https://js.devexpress.com/Documentation/Guide/Widgets/DataGrid/Data_Binding/Custom_Sources/
+      this.dataSource = new CustomStore({
+        key: 'OrderNumber',
+        load: function (loadOptions) {
+          let params = '?';
+          [
+            'skip',
+            'take',
+            'requireTotalCount',
+            'requireGroupCount',
+            'sort',
+            'filter',
+            'totalSummary',
+            'group',
+            'groupSummary'
+          ].forEach(function (i) {
+            if (i in loadOptions && isNotEmpty(loadOptions[i])) {
+              params += `${i}=${JSON.stringify(loadOptions[i])}&`;
+            }
+          });
+          params = params.slice(0, -1);
+          console.log('isi param display2: ', params)
+          return fetch(`https://js.devexpress.com/Demos/WidgetsGalleryDataService/api/orders${params}`)
+            .then(response => response.json())
+            .then((data) => {
+              // console.log('data respnse: ', data)
+              return {
+                data: data.data,
+                totalCount: data.totalCount,
+                summary: data.summary,
+                groupCount: data.groupCount
+              };
+            })
+            .catch(() => {
+              throw 'Data Loading Error';
+            });
+        },
+        insert: (values) => {
+          // eslint-disable-next-line no-console
+          console.log('values insert', values)
+          // return fetch("https://mydomain.com/MyDataService", {
+          //   method: "POST",
+          //   body: JSON.stringify(values),
+          //   headers: {
+          //     'Content-Type': 'application/json'
+          //   }
+          // }).then(handleErrors);
+        },
+        remove: (key) => {
+          console.log('key: ', key)
+          // return fetch(`https://mydomain.com/MyDataService/${encodeURIComponent(key)}`, {
+          //   method: "DELETE"
+          // }).then(handleErrors);
+        },
+        update: (key, values) => {
+          console.log('key update: ', key)
+          console.log('values update: ', values)
+          // return fetch(`https://mydomain.com/MyDataService/${encodeURIComponent(key)}`, {
+          //   method: "PUT",
+          //   body: JSON.stringify(values),
+          //   headers: {
+          //     'Content-Type': 'application/json'
+          //   }
+          // }).then(handleErrors);
+        }
+      })
     }
   };
 </script>
