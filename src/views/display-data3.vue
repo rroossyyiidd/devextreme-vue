@@ -2,10 +2,15 @@
   <div>
     <h2 class="content-block">Display Data Custom</h2>
 
+    <!--button style-->
+    <!--https://js.devexpress.com/Demos/WidgetsGallery/Demo/Button/PredefinedTypes/Vue/Light/-->
     <DxButton
             v-if="selectedDataRow.length > 0"
             text="Clear Selection"
             @click="clearSelection"
+            style="margin-bottom: 8px"
+            type="default"
+            styling-mode="contained"
     />
     <DxDataGrid
             :data-source="dataSource"
