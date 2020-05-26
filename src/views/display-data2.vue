@@ -16,6 +16,7 @@
             :paging="pagingTableOptions"
             :pager="pagerTableOptions"
             :remote-operations="true"
+            :row-alternation-enabled="true"
     >
       <!--filter data table-->
       <dx-filter-row :visible="true"/>
@@ -263,7 +264,6 @@
           return fetch(`https://js.devexpress.com/Demos/WidgetsGalleryDataService/api/orders${params}`)
             .then(response => response.json())
             .then((data) => {
-              // console.log('data respnse: ', data)
               return {
                 data: data.data,
                 totalCount: data.totalCount,
